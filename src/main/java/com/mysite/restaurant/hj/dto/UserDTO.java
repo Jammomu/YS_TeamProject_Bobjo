@@ -16,13 +16,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UserDTO {
 
-	private Long user_id;
+	private Long userId;
+	private String userName;
 	private String email;
 	private String password;
 	private String name;
 	private String phone;
 	private String profileImageUrl;
-	private Integer notification_agreed;
+	private Integer notificationAgreed;
 	private UserType userType;			// 사용자 권한
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

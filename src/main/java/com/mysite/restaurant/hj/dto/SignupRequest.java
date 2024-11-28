@@ -16,6 +16,10 @@ import lombok.NoArgsConstructor;
 public class SignupRequest {
 
 	@NotNull
+	@Size(max = 50)
+	private String userName;
+
+	@NotNull
 	@Size(min = 3, max = 50)
 	private String email;
 	
@@ -30,15 +34,16 @@ public class SignupRequest {
 	@NotNull
 	private String phone;
 	
-	private Integer notification_agreed;
+	private Integer notificationAgreed;
 	
 	public UserDTO toUserDTO(PasswordEncoder passwordEncoder) {
 		return UserDTO.builder()
+				.userName(userName)
 				.email(this.email)
 				.password(passwordEncoder.encode(this.password))
 				.name(this.name)
 				.phone(this.phone)
-				.notification_agreed(this.notification_agreed)
+				.notificationAgreed(this.notificationAgreed)
 				.build();
 	}
 }

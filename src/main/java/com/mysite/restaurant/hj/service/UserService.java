@@ -32,15 +32,24 @@ public class UserService {
 //				.build();
 //		userMapper.createAuth(userAuth);
 //	}
-	
+
+	@Transactional
     public void signup(UserDTO userDTO) {
         UserDTO user = new UserDTO();
+		user.setUserName(userDTO.getUserName());
         user.setEmail(userDTO.getEmail());
         user.setPassword(userDTO.getPassword());
         user.setName(userDTO.getName());
         user.setPhone(userDTO.getPhone());
+		user.setNotificationAgreed(userDTO.getNotificationAgreed());
         // userId는 자동 생성되므로 설정하지 않음
         userMapper.save(user);
+
+		UserAuthDTO userAuth = UserAuthDTO.builder()
+				.userId(user.getUserId())
+				.auth("ROLE_USER")
+				.build();
+		userMapper.createAuth(userAuth);
     }
 	
 	@Transactional

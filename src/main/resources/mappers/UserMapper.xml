@@ -3,9 +3,14 @@
 <mapper namespace="com.mysite.restaurant.hj.mapper.UserMapper">
 
 	<!-- 회원가입 -->
-	<insert id="save" parameterType="com.mysite.restaurant.hj.dto.UserDTO" useGeneratedKeys="true" keyProperty="user_id" keyColumn="user_id">
-		INSERT INTO users (email, PASSWORD, NAME, phone, notification_agreed)
-		VALUES (#{email}, #{password}, #{name}, #{phone}, #{notification_agreed});
+	<insert id="save" parameterType="com.mysite.restaurant.hj.dto.UserDTO" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
+		INSERT INTO users (user_name, email, password, name, phone, notification_agreed)
+		VALUES (#{userName}, #{email}, #{password}, #{name}, #{phone}, #{notificationAgreed});
+	</insert>
+
+	<insert id="createAuth" parameterType="com.mysite.restaurant.hj.dto.UserAuthDTO">
+		INSERT INTO user_auth (user_id, auth)
+		VALUES (#{userId}, #{auth})
 	</insert>
 	
 	<!-- 이메일 중복 여부 -->
