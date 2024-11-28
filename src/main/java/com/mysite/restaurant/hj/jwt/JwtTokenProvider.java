@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.crypto.SecretKey;
 
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -42,6 +43,7 @@ public class JwtTokenProvider {
 	@PostConstruct
 	public void init() {
 		byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+		this.key = Keys.hmacShaKeyFor(keyBytes);
 	}
 	
 	public String createToken(Authentication authentication) {

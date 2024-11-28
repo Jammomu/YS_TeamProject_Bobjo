@@ -51,13 +51,13 @@ public class UserService {
 				.build();
 		userMapper.createAuth(userAuth);
     }
-	
+
 	@Transactional
-	public void updateLacstLogin(String email) {
-		userMapper.selectLastLogin(email);
+	public void updateLastLogin(Long userId) {
+		userMapper.updateLastLogin(userId);
 	}
 	
 	public Optional<UserDTO> getUserByUsername(String userName) {
-		return userMapper.selectByUsername(userName);
+		return userMapper.selectByUserName(userName);
 	}
 }

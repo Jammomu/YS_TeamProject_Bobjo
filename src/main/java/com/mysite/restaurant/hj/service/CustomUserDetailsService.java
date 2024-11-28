@@ -1,8 +1,12 @@
 package com.mysite.restaurant.hj.service;
 
-import java.util.List;
+import java.util.Optional;
 
+import com.mysite.restaurant.hj.dto.CustomUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.mysite.restaurant.hj.dto.UserDTO;
@@ -12,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService  {
+public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private  UserMapper userMapper;
@@ -20,6 +24,15 @@ public class CustomUserDetailsService  {
 //	회원가입
 	public int save (UserDTO user) {
 		return userMapper.save(user);
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+		Optional<UserDTO> user = userMapper.selectByUserName(userName);
+		if (user.isEmpty()) {
+			throw new UsernameNotFoundException("User not found with userName: " + userName);
+		}
+		return new CustomUserDetails(user.orElse(null));
 	}
 	
 //	로그인

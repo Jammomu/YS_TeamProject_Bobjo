@@ -98,8 +98,8 @@ public class AuthController {
 	
 	@PostMapping("/login")
     public ResponseEntity<JsonResponse> login(@Valid @RequestBody LoginRequest request) {
-    	UsernamePasswordAuthenticationToken authenticationToken = 
-    			new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
+    	UsernamePasswordAuthenticationToken authenticationToken =
+    			new UsernamePasswordAuthenticationToken(request.getUserName(), request.getPassword());
     	
     	Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
     	SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -108,7 +108,7 @@ public class AuthController {
     	CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
     	UserDTO user = userDetails.getUser();
     	
-    	userService.updateLacstLogin(user.getEmail());
+    	userService.updateLastLogin(user.getUserId());
     	
     	TokenResponse tokenResponse = TokenResponse.builder()
     			.token(jwt)

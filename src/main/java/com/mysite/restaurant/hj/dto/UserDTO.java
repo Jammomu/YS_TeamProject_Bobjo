@@ -27,6 +27,8 @@ public class UserDTO {
 	private UserType userType;			// 사용자 권한
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private int isDeleted;
+	private Status status;
 	
 	private List<UserAuthDTO> authorities;
 	
@@ -34,5 +36,9 @@ public class UserDTO {
 		CUSTOMER,
 		OWNER,
 		USER
+	}
+
+	public enum Status {
+		ACTIVE
 	}
 }

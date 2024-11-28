@@ -2,6 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mysite.restaurant.hj.mapper.UserMapper">
 
+	<resultMap id="userMap" type="com.mysite.restaurant.hj.dto.UserDTO">
+		<id property="userId" column="user_id"/>
+		<result property="userName" column="user_name"/>
+		<result property="email" column="email"/>
+		<result property="password" column="password"/>
+		<result property="name" column="name"/>
+		<result property="phone" column="phone"/>
+		<result property="profileImageUrl" column="profile_image_url"/>
+		<result property="notificationAgreed" column="notification_agreed"/>
+		<result property="userType" column="user_type"/>
+		<result property="createAt" column="create_at"/>
+		<result property="updatedAt" column="updated_at"/>
+		<result property="isDeleted" column="is_deleted"/>
+		<result property="status" column="status"/>
+		<collection property="authorities" ofType="com.mysite.restaurant.hj.dto.UserAuthDTO">
+			<id property="authNo" column="auth_no"/>
+			<result property="auth" column="auth"/>
+		</collection>
+	</resultMap>
+
+	<select id="selectByUserName" resultMap="userMap">
+		SELECT m.*, ma.auth_no, ma.auth
+		FROM users m
+				 LEFT JOIN user_auth ma ON m.user_id = ma.user_id AND ma.is_deleted = FALSE
+		WHERE m.user_name = #{userName}
+		  AND m.is_deleted = FALSE
+		  AND m.status = 'ACTIVE'
+	</select>
+
 	<!-- 회원가입 -->
 	<insert id="save" parameterType="com.mysite.restaurant.hj.dto.UserDTO" useGeneratedKeys="true" keyProperty="userId" keyColumn="user_id">
 		INSERT INTO users (user_name, email, password, name, phone, notification_agreed)
@@ -49,7 +78,12 @@
 		DELETE FROM users
 		WHERE email = #{email};
 	</delete>
-	
+
+	<update id="updateLastLogin">
+		UPDATE users
+		SET last_login_at = CURRENT_TIMESTAMP
+		WHERE user_id = #{userId}
+	</update>
 	<!-- 휴대폰 인증 -->
 	<!-- 인증 코드 저장 -->
 <!--	<insert id="savePhoneVerification">-->
