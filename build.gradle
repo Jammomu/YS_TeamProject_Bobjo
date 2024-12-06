@@ -18,28 +18,37 @@ repositories {
 }
 
 dependencies {
+	// 기본 Spring Boot 구성
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// 테스트 관련
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	// 데이터 처리 및 데이터베이스
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
+	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// 프론트엔드 통합
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	
+
+	// 보안 관련
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+	// 코드 간소화
 	compileOnly 'org.projectlombok:lombok'
-  	annotationProcessor 'org.projectlombok:lombok'
-  	
-  	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
-  	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
-  	
-  	runtimeOnly 'com.mysql:mysql-connector-j'
-  	
-  	implementation 'org.springframework.boot:spring-boot-starter-security'
-  	testImplementation 'org.springframework.security:spring-security-test'
-  	
-  	// 테스트에서도 lombok 사용
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 }
+
 
 tasks.named('test') {
 	useJUnitPlatform()
