@@ -37,12 +37,6 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-    // Pagination Support
-    implementation 'com.github.pagehelper:pagehelper-spring-boot-starter:2.1.0'
-
-    // Devtools (Development Only)
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
     // Test Dependencies
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
