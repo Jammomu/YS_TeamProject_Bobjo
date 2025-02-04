@@ -86,21 +86,21 @@ public class ImageController {
         // 이미지 리스트 가져오기
         List<ImageDTO> images = restaurantService.getRestaurantImageById(restaurantId);
         
-        // 이미지 URL을 절대 경로로 변환
-        String baseUrl = "https://storage.cofile.co.kr/ysit24restaurant-bucket/images"; // 실제 서버 주소로 변경해야 함
-        
-        // 이미지 URL을 절대 경로로 수정
-        for (ImageDTO image : images) {
-            // "/images/"를 제외하고 절대 경로로 추가
-            String originalUrl = image.getImageUrl(); // 변환 전 URL 확인
-            String updatedUrl = baseUrl + originalUrl.substring(7); // 절대 경로로 변환
-
-            // 변환 전후 URL 콘솔에 출력
-            System.out.println("Original URL: " + originalUrl);
-            System.out.println("Updated URL: " + updatedUrl);
-            System.out.println("uploadDir URL: " + uploadDir);
-            image.setImageUrl(baseUrl + image.getImageUrl().substring(7));
-        }
+//        // 이미지 URL을 절대 경로로 변환
+//        String baseUrl = "https://storage.cofile.co.kr/ysit24restaurant-bucket/images"; // 실제 서버 주소로 변경해야 함
+//
+//        // 이미지 URL을 절대 경로로 수정
+//        for (ImageDTO image : images) {
+//            // "/images/"를 제외하고 절대 경로로 추가
+//            String originalUrl = image.getImageUrl(); // 변환 전 URL 확인
+//            String updatedUrl = baseUrl + originalUrl.substring(7); // 절대 경로로 변환
+//
+//            // 변환 전후 URL 콘솔에 출력
+//            System.out.println("Original URL: " + originalUrl);
+//            System.out.println("Updated URL: " + updatedUrl);
+//            System.out.println("uploadDir URL: " + uploadDir);
+//            image.setImageUrl(baseUrl + image.getImageUrl().substring(7));
+//        }
 
         return ResponseEntity.ok(images);  // 200 OK와 함께 수정된 이미지 목록 반환
     }

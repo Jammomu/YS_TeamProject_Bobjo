@@ -93,7 +93,20 @@ public class JwtTokenProvider {
 		
 		return new UsernamePasswordAuthenticationToken(principal, token, authorities);
 	}
-	
+
+	public Long getUserId(String token) {
+		Claims claims = parseClaims(token);
+		return claims.get("userId", Long.class);
+	}
+
+	private Claims parseClaims(String token) {
+		return Jwts.parser() // parserBuilder() 사용
+				.setSigningKey(key)
+				.build() // 빌드하여 JwtParser 생성
+				.parseClaimsJws(token) // claims 파싱
+				.getBody();
+	}
+
 	public boolean validateToken(String token) {
 		try {
 			Jwts.parser()

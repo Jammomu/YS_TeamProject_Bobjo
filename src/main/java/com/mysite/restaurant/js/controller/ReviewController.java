@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.mysite.restaurant.hj.jwt.JwtTokenProvider;
 import com.mysite.restaurant.js.model.*;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -20,12 +21,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import com.mysite.restaurant.js.service.ReviewService;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/api")
 public class ReviewController {
 
     private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
+
+    private JwtTokenProvider tokenProvider;
 
     private final MinioClient minioClient;
     private final ReviewService reviewService;
@@ -40,17 +44,27 @@ public class ReviewController {
     private String bucketName;
 
     @Autowired
-    public ReviewController(MinioClient minioClient, ReviewService reviewService) {
+    public ReviewController(MinioClient minioClient, ReviewService reviewService, JwtTokenProvider tokenProvider) {
         this.minioClient = minioClient;
         this.reviewService = reviewService;
+        this.tokenProvider = tokenProvider; // 추가
     }
 
     // 가게 리뷰와 리뷰 이미지 및 좋아요 상태 조회
     @GetMapping("/restaurants/{restaurant_id}/reviews")
     public Map<String, Object> getReviewsWithImages(
             @PathVariable("restaurant_id") Long restaurantId,
-            @RequestParam(value = "userId", required = false) Long userId
+            @RequestHeader("Authorization") String token // Authorization 헤더 추가
     ) {
+        // "Bearer " 제거
+        String jwtToken = token.replace("Bearer ", "");
+
+        // 토큰에서 사용자 ID 추출
+        Long userId = tokenProvider.getUserId(jwtToken);
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Token");
+        }
+
         // 가게 리뷰 조회
         List<Reviews> reviews = reviewService.selectRestaurantReviews(restaurantId);
 
@@ -94,35 +108,20 @@ public class ReviewController {
     }
 
     // 내 리뷰와 리뷰 이미지 조회
-    @GetMapping("/reviews/mypage/{user_id}")
-    public Map<String, Object> getMyReviewsWithImages(@PathVariable("user_id") Long userId) {
+    @GetMapping("/reviews/mypage")
+    public Map<String, Object> getMyReviewsWithImages(@RequestHeader("Authorization") String token) {
+        // "Bearer " 제거
+        String jwtToken = token.replace("Bearer ", "");
+
+        // 토큰에서 사용자 ID 추출
+        Long userId = tokenProvider.getUserId(jwtToken);
+
         // 사용자 리뷰 조회
         List<Reviews> reviews = reviewService.selectMyReviews(userId);
 
         // 리뷰 이미지 조회
-        List<ReviewImg> reviewImages = new ArrayList<>();
+        List<ReviewImg> reviewImages = reviewService.selectReviewImg(userId);
 
-        // MinIO 설정
-        String bucketName = "ysit24restaurant-bucket";
-        String baseUrl = "https://storage.cofile.co.kr";
-
-        for (Reviews review : reviews) {
-            List<ReviewImg> imgs = reviewService.selectReviewImg(review.getReviewId());
-
-            for (ReviewImg img : imgs) {
-                // 기존 이미지 URL 추출
-                String objectName = img.getImageUrl(); // 예: "/reviews/<file-name>"
-                if (objectName.startsWith("/")) {
-                    objectName = objectName.substring(1); // 슬래시 제거
-                }
-
-                // MinIO 절대 경로 생성
-                String absoluteUrl = baseUrl + "/" + bucketName + "/" + objectName;
-                img.setImageUrl(absoluteUrl); // URL 업데이트
-            }
-
-            reviewImages.addAll(imgs);
-        }
         // 레스토랑 조회
         List<Restaurants> restaurants = reviewService.selectMyRestaurants(userId);
 
